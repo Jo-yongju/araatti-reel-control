@@ -8,7 +8,9 @@
 | `firmware/encoder_test/App` | 초기 명령 파서·출력 변화율 제한·통신 타임아웃·모터 모사 계층 |
 | `firmware/encoder_test/Tests` | 초기 제어 계층의 호스트 시험 |
 | `foc/App` | BL4270E1K FOC 프로젝트의 UART·MCSDK 연결 소스 |
-| `foc/Inc`, `foc/bl4270e1k.ioc` | 당시 모터·드라이버 설정 |
+| `foc/STM32CubeIDE` | FOC CubeIDE 프로젝트, 시작 코드와 링커 스크립트 |
+| `foc/Src`, `foc/Inc`, `foc/bl4270e1k.ioc` | MCSDK 생성 코드와 당시 모터·드라이버 설정 |
+| `foc/Drivers`, `foc/MCSDK_v6.4.2-Full` | 빌드에 사용하는 HAL/CMSIS 및 MCSDK 소스 |
 | `docs` | 버전 구분과 MCSDK 연결 지점 |
 
 ## 구현 내용
@@ -23,6 +25,14 @@
 
 ## 확인 방법
 
+새 PC에는 STM32CubeIDE 1.17.0을 설치하고 저장소 ZIP을 **전체 압축 해제**합니다. 루트에서 아래 명령을 실행하면 엔코더와 FOC 프로젝트를 모두 클린 빌드합니다. 보드 연결이나 펌웨어 다운로드는 수행하지 않습니다.
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\Build-Firmware.ps1
+```
+
+설치 경로 지정, 프로젝트 선택과 검증 결과는 [빌드 안내](docs/build.md)를 참고하세요.
+
 엔코더 시험은 STM32CubeIDE에서 `firmware/encoder_test`를 가져옵니다. 프로젝트 이름은 `ffb_reel_g431`입니다. 측정값은 `encoder_raw_count`, `encoder_total_count`, `encoder_delta`, `encoder_direction`으로 확인합니다.
 
 초기 제어 계층의 호스트 시험은 Python 3와 GCC로 실행합니다.
@@ -31,7 +41,7 @@
 python tests/run_tests.py
 ```
 
-FOC 소스는 2026-10-03 기준 코드입니다. MCSDK 전체 배포본과 생성 프로젝트 전체를 포함하지 않아 이 폴더만으로 바로 빌드되지 않습니다. [연동 문서](docs/foc-integration.md)에 필요한 환경과 호출 지점을 정리했습니다.
+FOC 소스는 2026-10-03 기준 코드입니다. 현재 저장소에는 생성 프로젝트와 빌드에 필요한 MCSDK 6.4.2 소스를 포함했습니다. 기존 코드를 빌드할 때 Workbench 설치나 코드 재생성은 필요하지 않습니다. 모터 설정을 변경해 재생성할 경우에는 해당 버전의 Workbench가 필요합니다. [연동 문서](docs/foc-integration.md)에 호출 지점을 정리했습니다.
 
 기존 전류별 실험 영상과 별개로, 이번 저장소 정리에서는 새 모터 구동이나 게임 통합 시험을 수행하지 않았습니다. 초기 호스트 시험의 결과를 FOC 실물 검증 결과로 해석하지 않습니다.
 
